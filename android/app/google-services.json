@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "87257533918",
+    "project_id": "solidinity-app-account",
+    "storage_bucket": "solidinity-app-account.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87257533918:android:7a68756a8fee99fc7b614f",
+        "android_client_info": {
+          "package_name": "com.solidinity.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87257533918-ouc4sh6bvpkd2hhvvauecu4aroudb2bd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDKiAzc6tc_zxL5RP6rDe-3qhU9sNJA3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87257533918-ouc4sh6bvpkd2hhvvauecu4aroudb2bd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "87257533918-oo9l0pmth8iv4s3k2dqk65vbg60ri85f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.app1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
