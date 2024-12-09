@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:app1/models/destination.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,19 +11,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> destinations = [];
+  List<Destination> destinations = [];
 
   @override
   void initState() {
     super.initState();
-    loadDestinations();
+    loadDestinationsToPage();
   }
 
-  Future<void> loadDestinations() async {
-    final response = await rootBundle.loadString('assets/tourism.json');
-    final data = await json.decode(response);
+  Future<void> loadDestinationsToPage() async {
+    final loadedDestinations = await loadDestinations();
     setState(() {
-      destinations = data['destinations'];
+      destinations = loadedDestinations;
     });
   }
 
@@ -59,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                     child: Image.network(
-                      destination['image'],
+                      destination.image,
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
@@ -77,10 +75,10 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(destination['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              Text(destination.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                destination['address'],
+                                destination.address,
                                 style: const TextStyle(
                                   fontSize: 14, 
                                   color: Colors.grey,
@@ -105,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.blue,
                             ),
                             Text(
-                              destination['like'].toString(),
+                              destination.like.toString(),
                               style: const TextStyle(fontSize: 12)
                             )
                           ],
@@ -117,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    destination['description'],
+                    destination.description,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.justify,
@@ -127,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
                   child: ElevatedButton(
                     onPressed: () => {
-                      context.push('/destination?id=${destination['id']}')},
+                      context.push('/destination?id=${destination.id}')},
                     child: const Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
