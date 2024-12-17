@@ -1,28 +1,28 @@
-import 'package:app1/models/destination.dart';
+import 'package:app1/models/games.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class GameHomePage extends StatefulWidget {
+  const GameHomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<GameHomePage> createState() => _GameHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<Destination> destinations = [];
+class _GameHomePageState extends State<GameHomePage> {
+  List<Games> games = [];
 
   @override
   void initState() {
     super.initState();
-    loadDestinationsToPage();
+    loadGamesToPage();
   }
 
-  Future<void> loadDestinationsToPage() async {
-    final loadedDestinations = await loadDestinations();
+  Future<void> loadGamesToPage() async {
+    final loadedGames = await loadGames();
     setState(() {
-      destinations = loadedDestinations;
+      games = loadedGames;
     });
   }
 
@@ -40,33 +40,20 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      body: destinations.isEmpty
+      body: games.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: destinations.length,
+              itemCount: games.length,
               itemBuilder: (context, index) {
-                final destination = destinations[index];
+                final game = games[index];
                 return Card(
                     elevation: 8,
                     margin: const EdgeInsets.all(16),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                              child: Image.network(
-                                destination.image,
-                                width: double.infinity,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
                           Padding(
                               padding: const EdgeInsets.fromLTRB(16, 0, 18, 0),
                               child: Row(
@@ -81,13 +68,13 @@ class _HomePageState extends State<HomePage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              destination.name,
+                                              game.title,
                                               style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              destination.address,
+                                              game.genre,
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.grey,
@@ -112,9 +99,6 @@ class _HomePageState extends State<HomePage> {
                                             icon: const Icon(Icons.thumb_up),
                                             color: Colors.blue,
                                           ),
-                                          Text(destination.like.toString(),
-                                              style:
-                                                  const TextStyle(fontSize: 12))
                                         ],
                                       ),
                                     )
@@ -122,40 +106,11 @@ class _HomePageState extends State<HomePage> {
                           Padding(
                               padding: const EdgeInsets.all(16),
                               child: Text(
-                                destination.description,
+                                game.short_description,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.justify,
                               )),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
-                            child: ElevatedButton(
-                              onPressed: () => {
-                                context
-                                    .push('/destination?id=${destination.id}')
-                              },
-                              child: const Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Selanjutnya',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    size: 20,
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
                         ]));
               },
             ),
