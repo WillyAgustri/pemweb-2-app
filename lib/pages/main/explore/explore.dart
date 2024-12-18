@@ -1,4 +1,4 @@
-import 'package:app1/models/destination.dart';
+import 'package:app1/models/games.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,27 +11,27 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
-  List<Destination> destinations = [];
-  List<Destination> filteredDestinations = [];
+  List<Games> games = [];
+  List<Games> filteredgames = [];
 
   @override
   void initState() {
     super.initState();
-    loadDestinationsToPage();
+    loadgamesToPage();
   }
 
-  Future<void> loadDestinationsToPage() async {
-    final loadedDestinations = await loadDestinations();
+  Future<void> loadgamesToPage() async {
+    final loadedgames = await loadGames();
     setState(() {
-      destinations = loadedDestinations;
-      filteredDestinations = destinations;
+      games = loadedgames;
+      filteredgames = games;
     });
   }
 
-  void _filteredDestinations(String query) {
+  void _filteredgames(String query) {
     setState(() {
-      filteredDestinations = destinations
-          .where((d) => d.name.toLowerCase().contains(query.toLowerCase()))
+      filteredgames = games
+          .where((g) => g.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -47,144 +47,120 @@ class _ExplorePageState extends State<ExplorePage> {
               controller: _searchController,
               decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.search),
-                  hintText: 'Cari Destinasi',
+                  hintText: 'Cari Game',
                   filled: true,
                   fillColor: Colors.white10,
                   border: OutlineInputBorder(borderSide: BorderSide.none)),
-              onChanged: _filteredDestinations),
+              onChanged: _filteredgames),
         ),
         const SizedBox(
           height: 20,
         ),
-        filteredDestinations.isEmpty
+        filteredgames.isEmpty
             ? const Center(
                 child: Text('Hasil tidak ditemukan'),
               )
             : Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: filteredDestinations.length,
-                    itemBuilder: (context, index) {
-                      final destination = filteredDestinations[index];
-                      return Card(
-                          elevation: 8,
-                          margin: const EdgeInsets.all(16),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(4)),
-                                    child: Image.network(
-                                      destination.image,
-                                      width: double.infinity,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(16, 0, 18, 0),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    destination.name,
-                                                    style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Text(
-                                                    destination.address,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ]),
-                                          ),
-                                          const SizedBox(
-                                            width: 16,
-                                          ),
-                                          Expanded(
-                                            flex: 0,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {},
-                                                  icon: const Icon(
-                                                      Icons.thumb_up),
-                                                  color: Colors.blue,
-                                                ),
-                                                Text(
-                                                    destination.like.toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 12))
-                                              ],
-                                            ),
-                                          )
-                                        ])),
-                                Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Text(
-                                      destination.description,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.justify,
-                                    )),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(16, 0, 16, 18),
-                                  child: ElevatedButton(
-                                    onPressed: () => {
-                                      context.push(
-                                          '/destination?id=${destination.id}')
-                                    },
-                                    child: const Row(
+              child: ListView.builder(
+                itemCount: filteredgames.length,
+                itemBuilder: (context, index) {
+                  final game = filteredgames[index];
+                  return Card(
+                      elevation: 8,
+                      margin: const EdgeInsets.all(16),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Expanded(
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Selanjutnya',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8)),
+                                          child: Image.network(
+                                            game.thumbnail,
+                                            width: double.infinity,
+                                            height: 200,
+                                            fit: BoxFit.fitWidth,
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 6,
+                                        const SizedBox(height: 20,),
+                                        Text(
+                                          game.title,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                        Icon(
-                                          Icons.arrow_forward,
-                                          size: 20,
+                                        const SizedBox(height: 4,),
+                                        Row(
+                                          children: [
+                                            DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade600,
+                                                borderRadius: const BorderRadius.all(Radius.circular(4))
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                                                child: Text(
+                                                  game.genre,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black87,
+                                                    fontWeight: FontWeight.bold
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 4,),
+                                            DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade600,
+                                                borderRadius: const BorderRadius.all(Radius.circular(4))
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      game.platform == 'PC (Windows)' ? Icons.window : Icons.language,
+                                                      color: Colors.black87,
+                                                      size: 16,
+                                                    ),
+                                                    const SizedBox(width: 4,),
+                                                    Text(
+                                                      game.platform,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.black87,
+                                                        fontWeight: FontWeight.bold
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10,),
+                                        Text(
+                                          game.short_description,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.justify,
                                         )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ]));
-                    }),
+                                      ]),
+                                )),
+                          ]));
+                },
               ),
+            ),
       ],
     ));
   }

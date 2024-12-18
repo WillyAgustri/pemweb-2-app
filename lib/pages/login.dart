@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         AnimatedSnackBar.material('Login Berhasil',
                 borderRadius: BorderRadius.circular(50),
-                type: AnimatedSnackBarType.info,
+                type: AnimatedSnackBarType.success,
                 mobileSnackBarPosition: MobileSnackBarPosition.top,
                 duration: const Duration(seconds: 5),
                 animationCurve: Curves.easeInOut)
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
                 padding: const EdgeInsets.fromLTRB(36, 36, 36, 36),
                 child: Column(children: [
-                  Image.asset('logo_main_text.png', width: 75,),
+                  Image.asset('assets/logo_main_text.png', width: 75,),
                   const SizedBox(height: 24,),
                   const Text(
                     'Login',
