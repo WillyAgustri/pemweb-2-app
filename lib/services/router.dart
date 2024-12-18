@@ -72,7 +72,15 @@ class _ShellNavigationWrapperState extends State<_ShellNavigationWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My App'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('logo_main.png', height: 25,),
+            const SizedBox(width: 8,),
+            Image.asset('logo_text.png', height: 25,),
+          ]
+        ),
         centerTitle: true,
       ),
       body: widget.child,
