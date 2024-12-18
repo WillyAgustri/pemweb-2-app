@@ -1,5 +1,6 @@
 import 'package:app1/pages/main/details/details.dart';
 import 'package:app1/pages/main/explore/explore.dart';
+import 'package:app1/pages/main/games_home.dart';
 import 'package:app1/pages/main/profile/edit_password/edit_password.dart';
 import 'package:app1/pages/main/profile/verify_email/verify_email.dart';
 import 'package:flutter/material.dart';
@@ -193,11 +194,21 @@ class AppRouter {
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: const HomePage(),
+                child: const GameHomePage(),
                 transitionsBuilder: _slideTransitionHorizontal,
               );
             },
           ),
+          // GoRoute(
+          //   path: '/',
+          //   pageBuilder: (context, state) {
+          //     return CustomTransitionPage(
+          //       key: state.pageKey,
+          //       child: const HomePage(),
+          //       transitionsBuilder: _slideTransitionHorizontal,
+          //     );
+          //   },
+          // ),
           GoRoute(
             path: '/explore',
             pageBuilder: (context, state) {
