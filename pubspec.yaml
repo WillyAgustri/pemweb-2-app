@@ -81,7 +81,6 @@ flutter:
   assets:
   - .env
   - assets/google.png
-  - assets/default-profile-pic.jpg
   - assets/
   - assets/favicon.png
   - assets/logo_main.png
