@@ -44,6 +44,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   animated_snack_bar: ^0.4.0
   firebase_storage: ^12.3.6
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

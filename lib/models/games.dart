@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -46,9 +48,31 @@ class Games {
 }
 
 Future<List<Games>> loadGames() async {
-  final data = await rootBundle.loadString('assets/games.json');
-  final jsonResult = json.decode(data);
-  return (jsonResult['games'] as List)
+  final url = Uri.parse('https://www.freetogame.com/api/games');
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonResult = jsonDecode(response.body);
+    return jsonResult
       .map((item) => Games.fromJson(item))
       .toList();
+  } else {
+    throw Exception('failed to load game data');
+  }
+}
+
+Future<List<Games>> loadNewestGames() async {
+  final url = Uri.parse('https://www.freetogame.com/api/games?sort-by=release-date');
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonResult = jsonDecode(response.body);
+    return jsonResult
+      .map((item) => Games.fromJson(item))
+      .toList().take(6).toList();
+  } else {
+    throw Exception('failed to load game data');
+  }
 }

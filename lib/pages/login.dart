@@ -117,12 +117,21 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
                 padding: const EdgeInsets.fromLTRB(36, 36, 36, 36),
                 child: Column(children: [
-                  Image.asset('assets/logo_main_text.png', width: 75,),
-                  const SizedBox(height: 24,),
+                  const SizedBox(
+                    height: 36,
+                    width: double.infinity,
+                    // child: ColoredBox(color: Colors.transparent),
+                  ),
+                  Image.asset(
+                    'assets/logo_main_text.png',
+                    width: 66,
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
                   const Text(
                     'Login',
-                    style:
-                        TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 20,
@@ -155,13 +164,11 @@ class _LoginPageState extends State<LoginPage> {
                     autofillHints: const [AutofillHints.password],
                     decoration: InputDecoration(
                       label: const Text('Password'),
-                      prefixIconConstraints:
-                          const BoxConstraints(minWidth: 50),
+                      prefixIconConstraints: const BoxConstraints(minWidth: 50),
                       prefixIcon: const Icon(
                         Icons.lock,
                       ),
-                      suffixIconConstraints:
-                          const BoxConstraints(minWidth: 50),
+                      suffixIconConstraints: const BoxConstraints(minWidth: 50),
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -169,9 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                         icon: Icon(
-                          _isObscure
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                          _isObscure ? Icons.visibility : Icons.visibility_off,
                         ),
                       ),
                     ),
