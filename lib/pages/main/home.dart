@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:app1/models/games.dart';
+import 'package:infinite_games/models/games.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,6 +37,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadGamesToPage() async {
+    if (games.isNotEmpty && newestGames.isNotEmpty) {
+      return;
+    }
+
     final loadedGames = await loadGames();
     final loadedNewestGames = await loadNewestGames();
     setState(() {
@@ -76,20 +78,20 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   const SizedBox(
                       width: double.infinity,
-                      child: Center(
-                          child: Padding(
-                        padding: EdgeInsets.all(8),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: Text(
-                          'RILISAN TERBARU',
+                          'Rilisan Terbaru',
                           style: TextStyle(
                             fontFamily: '',
                             color: Colors.white,
                             fontSize: 24,
+                            letterSpacing: 0,
                             fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
                           ),
                         ),
-                      ))),
+                      )),
                   Container(
                     color: Colors.black,
                     height: 325,
@@ -146,11 +148,11 @@ class _HomePageState extends State<HomePage> {
                                                           loadingProgress) {
                                                         if (loadingProgress ==
                                                             null) {
-                                                          return child; // Jika sudah selesai loading, tampilkan gambar
+                                                          return child;
                                                         }
                                                         return Container(
                                                           color: Colors.grey
-                                                              .shade800, // Tetap tampilkan abu-abu saat loading
+                                                              .shade800,
                                                           width:
                                                               double.infinity,
                                                           height: 150,
@@ -160,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                                                           error, stackTrace) {
                                                         return Container(
                                                           color: Colors.grey
-                                                              .shade800, // Tampilkan abu-abu jika terjadi error
+                                                              .shade800,
                                                           width:
                                                               double.infinity,
                                                           height: 150,
@@ -307,15 +309,23 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 16,
                   ),
-                  const Text('SEMUA GAME',
-                      style: TextStyle(
-                        fontFamily: '',
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
+                  const SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: Text(
+                          'Semua Game',
+                          style: TextStyle(
+                            fontFamily: '',
+                            color: Colors.white,
+                            fontSize: 24,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       )),
                   ListView.builder(
                     shrinkWrap: true,
@@ -325,7 +335,7 @@ class _HomePageState extends State<HomePage> {
                       final game = games[index];
                       return Card(
                           elevation: 8,
-                          margin: const EdgeInsets.all(16),
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -357,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                                                       child, loadingProgress) {
                                                     if (loadingProgress ==
                                                         null) {
-                                                      return child; // Jika sudah selesai loading, tampilkan gambar
+                                                      return child;
                                                     }
                                                     return Container(
                                                       color:

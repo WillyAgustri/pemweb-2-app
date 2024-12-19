@@ -1,4 +1,4 @@
-import 'package:app1/models/games.dart';
+import 'package:infinite_games/models/games.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,19 +59,28 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             games.isEmpty
                 ? const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
                 : filteredgames.isEmpty
-                    ? const Expanded(
+                    ? Expanded(
                         flex: 1,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('Hasil tidak ditemukan'),
+                              Text(
+                                '404',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold, color: Colors.grey[600]),
+                              ),
+                              Text(
+                                'Hasil tidak ditemukan',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
                             ],
                           ),
                         ),
@@ -83,7 +92,7 @@ class _ExplorePageState extends State<ExplorePage> {
                             final game = filteredgames[index];
                             return Card(
                                 elevation: 8,
-                                margin: const EdgeInsets.all(16),
+                                margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                                 child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
