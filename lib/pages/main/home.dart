@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'dart:async';
+import 'package:infinite_games/models/games.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,20 +12,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> destinations = [];
+  List<Games> games = [];
+  List<Games> newestGames = [];
+  int currentPage = 0;
+  Timer? timer;
+
+  PageController pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
     super.initState();
-    loadDestinations();
+    loadGamesToPage();
+
+    timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      if (currentPage < 5) {
+        currentPage++;
+      } else {
+        currentPage = 0;
+      }
+
+      pageController.animateToPage(currentPage,
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
+    });
   }
 
-  Future<void> loadDestinations() async {
-    final response = await rootBundle.loadString('assets/tourism.json');
-    final data = await json.decode(response);
+  Future<void> loadGamesToPage() async {
+    if (games.isNotEmpty && newestGames.isNotEmpty) {
+      return;
+    }
+
+    final loadedGames = await loadGames();
+    final loadedNewestGames = await loadNewestGames();
     setState(() {
-      destinations = data['destinations'];
+      games = loadedGames;
+      newestGames = loadedNewestGames;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
   }
 
   @override
@@ -42,119 +69,367 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      body: destinations.isEmpty
-      ? const Center(child: CircularProgressIndicator(),)
-      : ListView.builder(
-        itemCount: destinations.length,
-        itemBuilder: (context, index) {
-          final destination = destinations[index];
-          return Card(
-            elevation: 8,
-            margin: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Image.network(
-                      destination['image'],
+      body: games.isEmpty || newestGames.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
                       width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Text(
+                          'Rilisan Terbaru',
+                          style: TextStyle(
+                            fontFamily: '',
+                            color: Colors.white,
+                            fontSize: 24,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )),
+                  Container(
+                    color: Colors.black,
+                    height: 325,
+                    width: double.infinity,
+                    child: PageView.builder(
+                      controller: pageController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: newestGames.length,
+                      itemBuilder: (context, index) {
+                        final game = newestGames[index];
+                        return GestureDetector(
+                          onTap: () {
+                            GoRouter.of(context).go(
+                              '/game-detail?id=${game.id}&title=${Uri.encodeComponent(game.title)}',
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: double.minPositive,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                repeat: ImageRepeat.noRepeat,
+                                opacity: 0.33,
+                                image: NetworkImage(game.thumbnail),
+                              ),
+                            ),
+                            child: Card(
+                              elevation: 8,
+                              margin: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8)),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                width: double.infinity,
+                                                height: 150,
+                                                color: Colors.grey.shade800,
+                                              ),
+                                              Image.network(
+                                                game.thumbnail,
+                                                width: double.infinity,
+                                                height: 150,
+                                                fit: BoxFit.cover,
+                                                loadingBuilder: (context, child,
+                                                    loadingProgress) {
+                                                  if (loadingProgress == null) {
+                                                    return child;
+                                                  }
+                                                  return Container(
+                                                    color: Colors.grey.shade800,
+                                                    width: double.infinity,
+                                                    height: 150,
+                                                  );
+                                                },
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Container(
+                                                    color: Colors.grey.shade800,
+                                                    width: double.infinity,
+                                                    height: 150,
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          game.title,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            // Genre and platform badges here
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          game.short_description,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 18, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: 
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(destination['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                destination['address'],
-                                style: const TextStyle(
-                                  fontSize: 14, 
-                                  color: Colors.grey,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ]
-                          ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        flex: 0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.thumb_up),
-                              color: Colors.blue,
-                            ),
-                            Text(
-                              destination['like'].toString(),
-                              style: const TextStyle(fontSize: 12)
-                            )
-                          ],
-                        ),
-                      )
-                    ]
-                  )
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    destination['description'],
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.justify,
-                  )
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      context.push('/destination?id=${destination['id']}')},
-                    child: const Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Selanjutnya',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Icon(
-                            Icons.arrow_forward,
-                            size: 20,
-                          )
-                        ],
-                      ),
+                  const SizedBox(
+                    height: 16,
                   ),
-                )
-              ]
-            )
-          );
-        },
-      ),
+                  const SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: Text(
+                          'Semua Game',
+                          style: TextStyle(
+                            fontFamily: '',
+                            color: Colors.white,
+                            fontSize: 24,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: games.length,
+                    itemBuilder: (context, index) {
+                      final game = games[index];
+                      return GestureDetector(
+                          onTap: () {
+                            GoRouter.of(context).go(
+                              '/game-detail?id=${game.id}&title=${Uri.encodeComponent(game.title)}',
+                            );
+                          },
+                          child: Card(
+                              elevation: 8,
+                              margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8)),
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: double.infinity,
+                                                      height: 150,
+                                                      color:
+                                                          Colors.grey.shade800,
+                                                    ),
+                                                    Image.network(
+                                                      game.thumbnail,
+                                                      width: double.infinity,
+                                                      height: 150,
+                                                      fit: BoxFit.cover,
+                                                      loadingBuilder: (context,
+                                                          child,
+                                                          loadingProgress) {
+                                                        if (loadingProgress ==
+                                                            null) {
+                                                          return child;
+                                                        }
+                                                        return Container(
+                                                          color: Colors
+                                                              .grey.shade800,
+                                                          width:
+                                                              double.infinity,
+                                                          height: 150,
+                                                        );
+                                                      },
+                                                      errorBuilder: (context,
+                                                          error, stackTrace) {
+                                                        return Container(
+                                                          color: Colors
+                                                              .grey.shade800,
+                                                          width:
+                                                              double.infinity,
+                                                          height: 150,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Text(
+                                                game.title,
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(
+                                                height: 4,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                        color: game.genre ==
+                                                                    'MMORPG' ||
+                                                                game.genre ==
+                                                                    'MMO' ||
+                                                                game.genre ==
+                                                                    'Action RPG'
+                                                            ? Colors.red
+                                                            : game.genre ==
+                                                                        'Shooter' ||
+                                                                    game.genre ==
+                                                                        'MMOFPS' ||
+                                                                    game.genre ==
+                                                                        'Battle Royale' ||
+                                                                    game.genre ==
+                                                                        'Strategy'
+                                                                ? Colors.orange
+                                                                : game.genre ==
+                                                                        'MOBA'
+                                                                    ? Colors
+                                                                        .orangeAccent
+                                                                    : game.genre ==
+                                                                            'Sports'
+                                                                        ? Colors
+                                                                            .greenAccent
+                                                                            .shade400
+                                                                        : game.genre ==
+                                                                                'Racing'
+                                                                            ? Colors
+                                                                                .purple.shade800
+                                                                            : Colors
+                                                                                .blueAccent.shade400,
+                                                        borderRadius:
+                                                            const BorderRadius.all(
+                                                                Radius.circular(
+                                                                    4))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 6),
+                                                      child: Text(
+                                                        game.genre,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 4,
+                                                  ),
+                                                  DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                        color: game.platform ==
+                                                                'PC (Windows)'
+                                                            ? Colors.blue
+                                                            : Colors.green,
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    4))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 6),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            game.platform ==
+                                                                    'PC (Windows)'
+                                                                ? Icons.window
+                                                                : Icons
+                                                                    .language,
+                                                            color: Colors.white,
+                                                            size: 16,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            game.platform,
+                                                            style: const TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                game.short_description,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              )
+                                            ])),
+                                  ])));
+                    },
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
