@@ -27,11 +27,34 @@ class MinimumSystemRequirements {
   }
 }
 
+class Screenshot {
+  final int id;
+  final String image;
+
+  Screenshot({
+    required this.id,
+    required this.image,
+  });
+
+  factory Screenshot.fromJson(Map<String, dynamic> json) {
+    return Screenshot(
+      id: json['id'],
+      image: json['image'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image': image,
+    };
+  }
+}
 class DetailGames {
   final int id;
   final String title;
-  final String thumbnail;
   final String status;
+  final String shortDescription;
   final String description;
   final String gameUrl;
   final String genre;
@@ -40,13 +63,14 @@ class DetailGames {
   final String developer;
   final String releaseDate;
   final String freetogameProfileUrl;
-  final MinimumSystemRequirements minimumSystemRequirements;
+  final MinimumSystemRequirements? minimumSystemRequirements;
+  final List<Screenshot> screenshots;
 
   DetailGames({
     required this.id,
     required this.title,
-    required this.thumbnail,
     required this.status,
+    required this.shortDescription,
     required this.description,
     required this.gameUrl,
     required this.genre,
@@ -56,14 +80,21 @@ class DetailGames {
     required this.releaseDate,
     required this.freetogameProfileUrl,
     required this.minimumSystemRequirements,
+    required this.screenshots,
   });
 
   factory DetailGames.fromJson(Map<String, dynamic> json) {
+    final List<Screenshot> screenshots = (json['screenshots'] as List)
+        .map((screenshot) => Screenshot.fromJson(screenshot)).take(3)
+        .toList();
+
+    screenshots.insert(0, Screenshot(id: 0, image: json['thumbnail']));
+
     return DetailGames(
       id: json['id'],
       title: json['title'],
-      thumbnail: json['thumbnail'],
       status: json['status'],
+      shortDescription: json['short_description'],
       description: json['description'],
       gameUrl: json['game_url'],
       genre: json['genre'],
@@ -72,8 +103,10 @@ class DetailGames {
       developer: json['developer'],
       releaseDate: json['release_date'],
       freetogameProfileUrl: json['freetogame_profile_url'],
-      minimumSystemRequirements: MinimumSystemRequirements.fromJson(
-          json['minimum_system_requirements']),
+      minimumSystemRequirements:  json['minimum_system_requirements'] != null
+        ? MinimumSystemRequirements.fromJson(json['minimum_system_requirements'])
+        : null,
+      screenshots: screenshots,
     );
   }
 }
