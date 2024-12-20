@@ -106,8 +106,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       )),
-                  Container(
-                    color: Colors.black,
+                  SizedBox(
                     height: 400,
                     width: double.infinity,
                     child: PageView.builder(
@@ -367,7 +366,10 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   Expanded(
                                                     child: ElevatedButton(
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          context.push(
+                                                              '/game-detail?id=${game.id}');
+                                                        },
                                                         style:
                                                             const ButtonStyle(
                                                           padding:
@@ -691,7 +693,10 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               Expanded(
                                                 child: ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      context.push(
+                                                          '/game-detail?id=${game.id}');
+                                                    },
                                                     style: const ButtonStyle(
                                                       padding:
                                                           WidgetStatePropertyAll(

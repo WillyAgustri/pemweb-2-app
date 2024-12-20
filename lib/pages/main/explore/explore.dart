@@ -1,7 +1,7 @@
+import 'package:go_router/go_router.dart';
 import 'package:infinite_games/models/games.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:go_router/go_router.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -304,7 +304,10 @@ class _ExplorePageState extends State<ExplorePage> {
                                                   children: [
                                                     Expanded(
                                                       child: ElevatedButton(
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            context.push(
+                                                                '/game-detail?id=${game.id}');
+                                                          },
                                                           style:
                                                               const ButtonStyle(
                                                             padding:
