@@ -5,6 +5,7 @@ import 'package:infinite_games/pages/main/profile/edit_password/edit_password.da
 import 'package:infinite_games/pages/main/profile/verify_email/verify_email.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_games/pages/main/sales/sales.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../pages/login.dart';
 import '../pages/signup.dart';
@@ -73,7 +74,22 @@ class _ShellNavigationWrapperState extends State<_ShellNavigationWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My App'),
+        title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/logo_main.png',
+                height: 25,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Image.asset(
+                'assets/logo_text.png',
+                height: 25,
+              ),
+            ]),
         centerTitle: true,
       ),
       body: widget.child,
@@ -212,11 +228,11 @@ class AppRouter {
             },
           ),
           GoRoute(
-            path: '/favorites',
+            path: '/sales',
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: const HomePage(),
+                child: const SalesPage(),
                 transitionsBuilder: _slideTransitionHorizontal,
               );
             },

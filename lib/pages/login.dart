@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         AnimatedSnackBar.material('Login Berhasil',
                 borderRadius: BorderRadius.circular(50),
-                type: AnimatedSnackBarType.info,
+                type: AnimatedSnackBarType.success,
                 mobileSnackBarPosition: MobileSnackBarPosition.top,
                 duration: const Duration(seconds: 5),
                 animationCurve: Curves.easeInOut)
@@ -107,9 +107,8 @@ class _LoginPageState extends State<LoginPage> {
         body: SingleChildScrollView(
       child: Column(children: [
         const SizedBox(
-          height: 100,
+          height: 25,
           width: double.infinity,
-          // child: ColoredBox(color: Colors.transparent),
         ),
         Align(
           alignment: Alignment.topCenter,

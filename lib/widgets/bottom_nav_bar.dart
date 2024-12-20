@@ -47,7 +47,7 @@ class BottomNavBar extends StatelessWidget {
             context.go('/explore');
             break;
           case 2:
-            context.go('/favorites');
+            context.go('/sales');
             break;
           case 3:
             context.go('/profile');
@@ -66,8 +66,8 @@ class BottomNavBar extends StatelessWidget {
           label: 'Jelajah'
         ),
         const NavigationDestination(
-          icon: Icon(Icons.star_rounded),
-          label: 'Favorit'
+          icon: Icon(Icons.discount),
+          label: 'Obral'
         ),
         NavigationDestination(
           icon: CircleAvatar(
