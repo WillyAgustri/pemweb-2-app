@@ -3,6 +3,8 @@ import 'package:infinite_games/models/games.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Games> games = [];
   List<Games> newestGames = [];
+  List<Games> cachedGames = [];
+  List<Games> cachedNewestGames = [];
   int currentPage = 0;
   Timer? timer;
 
@@ -37,15 +41,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadGamesToPage() async {
-    if (games.isNotEmpty && newestGames.isNotEmpty) {
-      return;
+    if (cachedGames.isEmpty) {
+      cachedGames = await loadPopularGames();
     }
 
-    final loadedGames = await loadGames();
-    final loadedNewestGames = await loadNewestGames();
+    if (cachedNewestGames.isEmpty) {
+      cachedNewestGames = await loadNewestGames();
+    }
+
     setState(() {
-      games = loadedGames;
-      newestGames = loadedNewestGames;
+      games = cachedGames.take(25).toList();
+      newestGames = cachedNewestGames;
     });
   }
 
@@ -68,6 +74,11 @@ class _HomePageState extends State<HomePage> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    String formatDate(String dateStr) {
+      DateTime parsedDate = DateTime.parse(dateStr);
+      return DateFormat('dd/MM/yyyy').format(parsedDate);
+    }
+
     return Scaffold(
       body: games.isEmpty || newestGames.isEmpty
           ? const Center(
@@ -76,13 +87,16 @@ class _HomePageState extends State<HomePage> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(
+                  Image.asset('assets/hero.png'),
+                  // const SizedBox(height: 16,),
+                  Container(
+                      color: const Color.fromRGBO(25, 28, 85, 1),
                       width: double.infinity,
-                      child: Padding(
+                      child: const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: Text(
-                          'Rilisan Terbaru',
+                          'Game Rilisan Terbaru',
                           style: TextStyle(
                             fontFamily: '',
                             color: Colors.white,
@@ -94,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                       )),
                   Container(
                     color: Colors.black,
-                    height: 325,
+                    height: 400,
                     width: double.infinity,
                     child: PageView.builder(
                       controller: pageController,
@@ -106,6 +120,7 @@ class _HomePageState extends State<HomePage> {
                           width: MediaQuery.of(context).size.width,
                           height: double.minPositive,
                           decoration: BoxDecoration(
+                            color: Colors.grey[900],
                             image: DecorationImage(
                                 fit: BoxFit.fitHeight,
                                 repeat: ImageRepeat.noRepeat,
@@ -151,8 +166,8 @@ class _HomePageState extends State<HomePage> {
                                                           return child;
                                                         }
                                                         return Container(
-                                                          color: Colors.grey
-                                                              .shade800,
+                                                          color: Colors
+                                                              .grey.shade800,
                                                           width:
                                                               double.infinity,
                                                           height: 150,
@@ -161,14 +176,51 @@ class _HomePageState extends State<HomePage> {
                                                       errorBuilder: (context,
                                                           error, stackTrace) {
                                                         return Container(
-                                                          color: Colors.grey
-                                                              .shade800,
+                                                          color: Colors
+                                                              .grey.shade800,
                                                           width:
                                                               double.infinity,
                                                           height: 150,
                                                         );
                                                       },
                                                     ),
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .only(
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          8)),
+                                                      child: DecoratedBox(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        178,
+                                                                        0,
+                                                                        0,
+                                                                        0)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 4,
+                                                                  horizontal:
+                                                                      8),
+                                                          child: Text(
+                                                            'Rilis pada ${formatDate(game.release_date)}',
+                                                            style: const TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
                                                   ],
                                                 ),
                                               ),
@@ -181,6 +233,12 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.bold),
+                                              ),
+                                              Text(
+                                                'Oleh ${game.publisher}',
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey),
                                               ),
                                               const SizedBox(
                                                 height: 4,
@@ -301,6 +359,110 @@ class _HomePageState extends State<HomePage> {
                                                 game.short_description,
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                        onPressed: () {},
+                                                        style:
+                                                            const ButtonStyle(
+                                                          padding:
+                                                              WidgetStatePropertyAll(
+                                                                  EdgeInsets
+                                                                      .all(8)),
+                                                          backgroundColor:
+                                                              WidgetStatePropertyAll(
+                                                                  Colors
+                                                                      .white12),
+                                                          foregroundColor:
+                                                              WidgetStatePropertyAll(
+                                                                  Colors.blue),
+                                                        ),
+                                                        child: const Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              'Lihat Detail',
+                                                              style: TextStyle(
+                                                                  fontSize: 14),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Icon(
+                                                              Icons
+                                                                  .arrow_forward,
+                                                              size: 18,
+                                                            )
+                                                          ],
+                                                        )),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                        onPressed: () async {
+                                                          final Uri url =
+                                                              Uri.parse(game
+                                                                  .game_url);
+
+                                                          if (!await launchUrl(
+                                                              url,
+                                                              mode: LaunchMode
+                                                                  .inAppBrowserView)) {
+                                                            throw Exception(
+                                                                "Could not launch $url");
+                                                          }
+                                                        },
+                                                        style:
+                                                            const ButtonStyle(
+                                                          padding:
+                                                              WidgetStatePropertyAll(
+                                                                  EdgeInsets
+                                                                      .all(8)),
+                                                          backgroundColor:
+                                                              WidgetStatePropertyAll(
+                                                                  Colors
+                                                                      .white12),
+                                                          foregroundColor:
+                                                              WidgetStatePropertyAll(
+                                                                  Colors.blue),
+                                                        ),
+                                                        child: const Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              'Lihat Toko',
+                                                              style: TextStyle(
+                                                                  fontSize: 14),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 8,
+                                                            ),
+                                                            Icon(
+                                                              Icons
+                                                                  .shopping_bag,
+                                                              size: 16,
+                                                            )
+                                                          ],
+                                                        )),
+                                                  )
+                                                ],
                                               )
                                             ])),
                                   ])),
@@ -315,9 +477,9 @@ class _HomePageState extends State<HomePage> {
                       width: double.infinity,
                       child: Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: Text(
-                          'Semua Game',
+                          'Game Populer',
                           style: TextStyle(
                             fontFamily: '',
                             color: Colors.white,
@@ -397,6 +559,12 @@ class _HomePageState extends State<HomePage> {
                                             style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            'Oleh ${game.publisher}',
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey),
                                           ),
                                           const SizedBox(
                                             height: 4,
@@ -515,6 +683,102 @@ class _HomePageState extends State<HomePage> {
                                             game.short_description,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(
+                                            height: 8,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: const ButtonStyle(
+                                                      padding:
+                                                          WidgetStatePropertyAll(
+                                                              EdgeInsets.all(
+                                                                  8)),
+                                                      backgroundColor:
+                                                          WidgetStatePropertyAll(
+                                                              Colors.white12),
+                                                      foregroundColor:
+                                                          WidgetStatePropertyAll(
+                                                              Colors.blue),
+                                                    ),
+                                                    child: const Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Lihat Detail',
+                                                          style: TextStyle(
+                                                              fontSize: 14),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Icon(
+                                                          Icons.arrow_forward,
+                                                          size: 18,
+                                                        )
+                                                      ],
+                                                    )),
+                                              ),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                    onPressed: () async {
+                                                      final Uri url = Uri.parse(
+                                                          game.game_url);
+
+                                                      if (!await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .inAppBrowserView)) {
+                                                        throw Exception(
+                                                            "Could not launch $url");
+                                                      }
+                                                    },
+                                                    style: const ButtonStyle(
+                                                      padding:
+                                                          WidgetStatePropertyAll(
+                                                              EdgeInsets.all(
+                                                                  8)),
+                                                      backgroundColor:
+                                                          WidgetStatePropertyAll(
+                                                              Colors.white12),
+                                                      foregroundColor:
+                                                          WidgetStatePropertyAll(
+                                                              Colors.blue),
+                                                    ),
+                                                    child: const Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Lihat Toko',
+                                                          style: TextStyle(
+                                                              fontSize: 14),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Icon(
+                                                          Icons.shopping_bag,
+                                                          size: 16,
+                                                        )
+                                                      ],
+                                                    )),
+                                              )
+                                            ],
                                           )
                                         ])),
                               ]));
