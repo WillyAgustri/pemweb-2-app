@@ -351,7 +351,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const SizedBox(
-                              height: 16,
+                              height: 8,
                             ),
                             DecoratedBox(
                               decoration: BoxDecoration(
@@ -384,7 +384,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const SizedBox(
-                              height: 24,
+                              height: 20,
                             ),
                             SizedBox(
                               width: double.infinity,
@@ -396,7 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   )),
                             ),
                             const SizedBox(
-                              height: 16,
+                              height: 8,
                             ),
                             isPasswordLogin
                                 ? Column(
@@ -413,7 +413,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             )),
                                       ),
                                       const SizedBox(
-                                        height: 16,
+                                        height: 8,
                                       ),
                                     ],
                                   )
