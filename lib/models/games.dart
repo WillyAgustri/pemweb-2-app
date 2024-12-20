@@ -52,9 +52,20 @@ Future<List<Games>> loadGames() async {
 
   if (response.statusCode == 200) {
     final List<dynamic> jsonResult = jsonDecode(response.body);
-    return jsonResult
-      .map((item) => Games.fromJson(item))
-      .toList();
+    return jsonResult.map((item) => Games.fromJson(item)).toList();
+  } else {
+    throw Exception('failed to load game data');
+  }
+}
+
+Future<Games> loadDetailGame(String id) async {
+  final url = Uri.parse('https://www.freetogame.com/api/game?id=$id');
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final jsonResult = jsonDecode(response.body);
+    return Games.fromJson(jsonResult);
   } else {
     throw Exception('failed to load game data');
   }
@@ -76,15 +87,18 @@ Future<List<Games>> loadPopularGames() async {
 }
 
 Future<List<Games>> loadNewestGames() async {
-  final url = Uri.parse('https://www.freetogame.com/api/games?sort-by=release-date');
+  final url =
+      Uri.parse('https://www.freetogame.com/api/games?sort-by=release-date');
 
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
     final List<dynamic> jsonResult = jsonDecode(response.body);
     return jsonResult
-      .map((item) => Games.fromJson(item))
-      .toList().take(6).toList();
+        .map((item) => Games.fromJson(item))
+        .toList()
+        .take(6)
+        .toList();
   } else {
     throw Exception('failed to load game data');
   }
