@@ -97,16 +97,17 @@ class _SalesPageState extends State<SalesPage> {
                                               borderRadius:
                                                   const BorderRadius.only(
                                                       bottomRight:
-                                                          Radius.circular(4)),
+                                                          Radius.circular(8)),
                                               child: DecoratedBox(
                                                 decoration: const BoxDecoration(
-                                                    color: Colors.deepOrange),
+                                                    color: Color.fromARGB(178, 0, 0, 0)),
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(4),
+                                                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                   child: Text(
                                                     'Promo hingga ${formatDate(game.expiry!)}',
                                                     style: const TextStyle(
+                                                        fontSize: 12,
                                                         color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -189,7 +190,7 @@ class _SalesPageState extends State<SalesPage> {
                             ],
                           ),
                           const SizedBox(
-                            height: 16,
+                            height: 8,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -202,17 +203,19 @@ class _SalesPageState extends State<SalesPage> {
                                   }
                                 },
                                 style: const ButtonStyle(
-                                  padding: WidgetStatePropertyAll(EdgeInsets.all(8))
+                                  padding: WidgetStatePropertyAll(EdgeInsets.all(8)),
+                                  backgroundColor: WidgetStatePropertyAll(Colors.white12),
+                                  foregroundColor: WidgetStatePropertyAll(Colors.blue),
                                 ),
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text('Lihat Toko', style: TextStyle(fontSize: 16),),
+                                    Text('Lihat Toko', style: TextStyle(fontSize: 14),),
                                     SizedBox(width: 8,),
                                     Icon(
-                                      Icons.shopping_cart_outlined,
-                                      size: 20,
+                                      Icons.shopping_bag,
+                                      size: 16,
                                     )
                                   ],
                                 )),
