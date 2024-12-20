@@ -1,4 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -47,7 +46,7 @@ class Games {
 }
 
 String freegameurl = 'https://free-to-play-games-database.p.rapidapi.com';
-String? freegamesKey = dotenv.env['FREEGAMES_KEY'];
+String? freegamesKey = const String.fromEnvironment('FREEGAMES_KEY');
 
 Future<List<Games>> loadGames() async {
   final url = Uri.parse('$freegameurl/api/games');

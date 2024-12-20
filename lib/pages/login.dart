@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
@@ -64,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _loginWithGoogle() async {
-    String? googleClientID = dotenv.env['GOOGLE_CLIENT_ID'];
+    String? googleClientID = const String.fromEnvironment('GOOGLE_CLIENT_ID');
 
     try {
       final GoogleSignIn googleSignIn =

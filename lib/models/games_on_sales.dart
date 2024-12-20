@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SalesGames {
   final String title;
@@ -38,7 +37,7 @@ class SalesGames {
 }
 
 Future<List<SalesGames>> loadGamesOnSales() async {
-  String itadKey = dotenv.env['ITAD_KEY'] ?? '';
+  String itadKey = const String.fromEnvironment('ITAD_KEY');
   final url = Uri.parse('https://api.isthereanydeal.com/deals/v2?key=$itadKey&country=ID&filter=N4IgxgrgLiBcoFsCWA7OBOADAGhAghgB5wCMmmAvhUA=&sort=-trending');
 
   try {

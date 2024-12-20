@@ -42,6 +42,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# vercel
+vercel.json
+
 # Environment variables
 .env
 **/.env
