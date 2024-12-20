@@ -118,7 +118,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                     child: const Text('Kirim Email Reset'),
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 8),
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(

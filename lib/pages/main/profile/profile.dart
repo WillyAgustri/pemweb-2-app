@@ -351,7 +351,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const SizedBox(
-                              height: 16,
+                              height: 8,
                             ),
                             DecoratedBox(
                               decoration: BoxDecoration(
@@ -384,7 +384,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             const SizedBox(
-                              height: 24,
+                              height: 20,
                             ),
                             SizedBox(
                               width: double.infinity,
@@ -394,9 +394,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: const Text(
                                     'Edit Profil',
                                   )),
-                            ),
-                            const SizedBox(
-                              height: 16,
                             ),
                             isPasswordLogin
                                 ? Column(
@@ -412,12 +409,34 @@ class _ProfilePageState extends State<ProfilePage> {
                                               'Ubah Password',
                                             )),
                                       ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
                                     ],
                                   )
                                 : const SizedBox(),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                  onPressed: () => context.push('/about'),
+                                  style: ButtonStyle(
+                                      foregroundColor:
+                                          const WidgetStatePropertyAll(
+                                              Colors.white60),
+                                      backgroundColor:
+                                          const WidgetStatePropertyAll(
+                                              Colors.transparent),
+                                      shape: WidgetStatePropertyAll(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              side: const BorderSide(
+                                                color: Colors.white54,
+                                              )))),
+                                  child: const Text(
+                                    'Tentang Aplikasi',
+                                    style:
+                                        TextStyle(color: Colors.white54),
+                                  )),
+                            ),
+                            const SizedBox(height: 8,),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(

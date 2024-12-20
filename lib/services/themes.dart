@@ -28,11 +28,8 @@ final darkTheme = ThemeData(
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
-        side: const BorderSide(
-          color: Colors.white24
-        )
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       elevation: 5,
     )
   ),

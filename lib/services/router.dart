@@ -1,7 +1,8 @@
-import 'package:app1/pages/main/details/details.dart';
-import 'package:app1/pages/main/explore/explore.dart';
-import 'package:app1/pages/main/profile/edit_password/edit_password.dart';
-import 'package:app1/pages/main/profile/verify_email/verify_email.dart';
+import 'package:infinite_games/pages/main/details/game_details.dart';
+import 'package:infinite_games/pages/main/explore/explore.dart';
+import 'package:infinite_games/pages/main/profile/about/about.dart';
+import 'package:infinite_games/pages/main/profile/edit_password/edit_password.dart';
+import 'package:infinite_games/pages/main/profile/verify_email/verify_email.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/bottom_nav_bar.dart';
@@ -165,13 +166,23 @@ class AppRouter {
       },
     ),
     GoRoute(
-      path: '/destination',
+      path: '/game-detail',
       pageBuilder: (context, state) {
-        final id = int.parse(state.uri.queryParameters['id']!);
+        final gameId = int.parse(state.uri.queryParameters['id']!);
         return CustomTransitionPage(
           key: state.pageKey,
-          child: DestinationPage(id: id),
-          transitionsBuilder: _slideTransitionVertical,
+          child: GameDetailsPage(id: gameId),
+          transitionsBuilder: _slideTransitionHorizontal,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/about',
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const AboutPage(),
+          transitionsBuilder: _slideTransitionHorizontal,
         );
       },
     ),

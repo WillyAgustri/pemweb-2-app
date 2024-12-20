@@ -44,6 +44,25 @@ dependencies:
   flutter_dotenv: ^5.2.1
   animated_snack_bar: ^0.4.0
   firebase_storage: ^12.3.6
+  http: ^1.2.2
+  flutter_launcher_icons: ^0.14.2
+  intl: ^0.20.1
+  url_launcher: ^6.3.1
+
+flutter_launcher_icons:
+  android: true
+  min_sdk_android: 21
+  image_path: "assets/favicon.png"
+  image_path_web: "assets/favicon.png"
+  image_path_android: "assets/favicon.png"
+  adaptive_icon_background: "#1a1a1a" # only available for Android 8.0 devices and above
+  adaptive_icon_foreground: "assets/foreground_logo.png" # only available for Android 8.0 devices and above
+  adaptive_icon_foreground_inset: 16 # only available for Android 8.0 devices and above
+  web:
+    generate: true
+    image_path: "assets/favicon.png"
+    background_color: "#1a1a1a"
+    theme_color: "#1a1a1a"
 
 dev_dependencies:
   flutter_test:
@@ -69,8 +88,13 @@ flutter:
   assets:
   - .env
   - assets/google.png
-  - assets/default-profile-pic.jpg
   - assets/
+  - assets/favicon.png
+  - assets/logo_main.png
+  - assets/logo_text.png
+  - assets/logo_main_text.png
+  - assets/foreground_logo.png
+  - assets/hero.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
