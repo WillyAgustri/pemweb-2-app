@@ -45,7 +45,7 @@ class DestinationPage extends StatelessWidget {
           return Scaffold(
               appBar: AppBar(
                   leading: BackButton(onPressed: () => context.pop()),
-                  title: const Text('Destinasi')),
+                  title: Text(destination.name)),
               body: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
