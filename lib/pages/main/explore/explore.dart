@@ -12,27 +12,27 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
-  List<Games> games = [];
-  List<Games> filteredgames = [];
+  List<Destination> destinations = [];
+  List<Destination> filteredDestinations = [];
 
   @override
   void initState() {
     super.initState();
-    loadgamesToPage();
+    loadDestinationsToPage();
   }
 
-  Future<void> loadgamesToPage() async {
-    final loadedgames = await loadGames();
+  Future<void> loadDestinationsToPage() async {
+    final loadedDestinations = await loadDestinations();
     setState(() {
-      games = loadedgames;
-      filteredgames = games;
+      destinations = loadedDestinations;
+      filteredDestinations = destinations;
     });
   }
 
-  void _filteredgames(String query) {
+  void _filteredDestinations(String query) {
     setState(() {
-      filteredgames = games
-          .where((g) => g.title.toLowerCase().contains(query.toLowerCase()))
+      filteredDestinations = destinations
+          .where((d) => d.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
