@@ -1,11 +1,9 @@
-import 'package:infinite_games/pages/main/details/details.dart';
-import 'package:infinite_games/pages/main/details/game_details.dart';
-import 'package:infinite_games/pages/main/explore/explore.dart';
-import 'package:infinite_games/pages/main/profile/edit_password/edit_password.dart';
-import 'package:infinite_games/pages/main/profile/verify_email/verify_email.dart';
+import 'package:app1/pages/main/details/details.dart';
+import 'package:app1/pages/main/explore/explore.dart';
+import 'package:app1/pages/main/profile/edit_password/edit_password.dart';
+import 'package:app1/pages/main/profile/verify_email/verify_email.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:infinite_games/pages/main/sales/sales.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../pages/login.dart';
 import '../pages/signup.dart';
@@ -74,22 +72,7 @@ class _ShellNavigationWrapperState extends State<_ShellNavigationWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/logo_main.png',
-                height: 25,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Image.asset(
-                'assets/logo_text.png',
-                height: 25,
-              ),
-            ]),
+        title: const Text('My App'),
         centerTitle: true,
       ),
       body: widget.child,
@@ -182,13 +165,13 @@ class AppRouter {
       },
     ),
     GoRoute(
-      path: '/game-detail',
+      path: '/destination',
       pageBuilder: (context, state) {
         final id = int.parse(state.uri.queryParameters['id']!);
         return CustomTransitionPage(
           key: state.pageKey,
-          child: GameDetailsPage(id: id),
-          transitionsBuilder: _slideTransitionHorizontal,
+          child: DestinationPage(id: id),
+          transitionsBuilder: _slideTransitionVertical,
         );
       },
     ),
@@ -218,11 +201,11 @@ class AppRouter {
             },
           ),
           GoRoute(
-            path: '/sales',
+            path: '/favorites',
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: const SalesPage(),
+                child: const HomePage(),
                 transitionsBuilder: _slideTransitionHorizontal,
               );
             },
