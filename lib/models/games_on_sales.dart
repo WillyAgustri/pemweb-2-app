@@ -1,11 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SalesGames {
   final String title;
   final String? type;
   final String? image;
-  // final List<String> platforms;
   final int regularPrice;
   final int dealPrice;
   final int discount;
@@ -16,7 +16,6 @@ class SalesGames {
     required this.title,
     required this.type,
     required this.image,
-    // required this.platforms,
     required this.regularPrice,
     required this.dealPrice,
     required this.discount,
@@ -29,9 +28,6 @@ class SalesGames {
       title: json['title'],
       type: json['type'],
       image: json['assets']['banner400'],
-      // platforms: (json['deal']['platforms'] as List)
-      //     .map((platform) => platform['name'] as String)
-      //     .toList(),
       regularPrice: json['deal']['regular']['amount'],
       dealPrice: json['deal']['price']['amount'],
       discount: json['deal']['cut'],
@@ -42,7 +38,8 @@ class SalesGames {
 }
 
 Future<List<SalesGames>> loadGamesOnSales() async {
-  final url = Uri.parse('https://api.isthereanydeal.com/deals/v2?key=3b118f8b6d1f715098489606e24b88931042fe68&country=ID&filter=N4IgxgrgLiBcoFsCWA7OBOADAGhAghgB5wCMmmAvhUA=&sort=-trending');
+  String itadKey = dotenv.env['ITAD_KEY'] ?? '';
+  final url = Uri.parse('https://api.isthereanydeal.com/deals/v2?key=$itadKey&country=ID&filter=N4IgxgrgLiBcoFsCWA7OBOADAGhAghgB5wCMmmAvhUA=&sort=-trending');
 
   try {
     final response = await http.get(url);
