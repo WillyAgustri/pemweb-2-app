@@ -58,15 +58,15 @@ class _GameDetailsPageState extends State<GameDetailsPage> {
       future: loadDetailGame(widget.id!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('Error loading game details'));
+          return const Scaffold(body: Center(child: Text('Error loading game details')));
         }
 
         if (!snapshot.hasData) {
-          return const Center(child: Text('No game data available'));
+          return const Scaffold(body: Center(child: Text('No game data available')));
         }
 
         final game = snapshot.data!;

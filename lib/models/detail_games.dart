@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -110,11 +111,13 @@ class DetailGames {
     );
   }
 }
+String freegameurl = 'https://free-to-play-games-database.p.rapidapi.com';
+String? freegamesKey = dotenv.env['FREEGAMES_KEY'];
 
 Future<DetailGames> loadDetailGame(int id) async {
-  final url = Uri.parse('https://www.freetogame.com/api/game?id=$id');
+  final url = Uri.parse('$freegameurl/api/game?id=$id');
 
-  final response = await http.get(url);
+  final response = await http.get(url, headers: {'x-rapidapi-key': freegamesKey!});
 
   if (response.statusCode == 200) {
     final Map<String, dynamic> jsonResult = jsonDecode(response.body);
