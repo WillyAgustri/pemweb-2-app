@@ -58,19 +58,6 @@ Future<List<Games>> loadGames() async {
   }
 }
 
-Future<Games> loadDetailGame(String id) async {
-  final url = Uri.parse('https://www.freetogame.com/api/game?id=$id');
-
-  final response = await http.get(url);
-
-  if (response.statusCode == 200) {
-    final jsonResult = jsonDecode(response.body);
-    return Games.fromJson(jsonResult);
-  } else {
-    throw Exception('failed to load game data');
-  }
-}
-
 Future<List<Games>> loadPopularGames() async {
   final url = Uri.parse('https://www.freetogame.com/api/games?sort-by=popularity');
 
